@@ -1,0 +1,17 @@
+id = c3a6951a-33d8-4f1d-a686-f07f94e8ca39
+
+[relations]
+
+[relations.collections]
+rootDirectory = postman/collections
+files[] = {"id":"1358017-51eae0da-d9c0-4deb-8b8c-11901ba9a934","path":"Autoparts24 API.json","metaData":{}}
+
+[relations.collections.metaData]
+
+[relations.apiDefinition]
+rootDirectory = postman/schemas
+files[] = {"path":"index.json","metaData":{}}
+
+[relations.apiDefinition.metaData]
+type = openapi:3
+rootFiles[] = index.json

@@ -1,0 +1,481 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Autoparts24 API",
+    "description": "Это API преднозначено для клиентов компании ООО Автопромсервис\n\n## Общее описание поведения\n\n1. Ответы от сервера всегда отдаются в формате указанном в заголовке Content-type, либо без данных. Это зависит от логики метода. Преимущественно в формате JSON.\n2. Формат возвращаемых json данных, в случае ошибки, всегда содержит следующие свойства {\"status\": \"error\", \"error_code\":\"xxx\",\"error_message\":\"yyy\"}.\n3. Все адреса начинаются с https://autoparts24.by/api/ordering/v1.0/contractors\n4. Все запросы должны содержать специальный заголовок с api ключом - Core2-Apikey: [APIKEY]\n",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://autoparts24.by/api/ordering/v1.0/contractors",
+      "description": "autoparts24.by"
+    },
+    {
+      "url": "http://stepovichpe.zend-server/autoparts24.by",
+      "description": "easter"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Заказы",
+      "description": "Работа с заказами клиента"
+    },
+    {
+      "name": "Запчасти",
+      "description": "Получение данные о запчастях"
+    }
+  ],
+  "paths": {
+    "/order/list": {
+      "get": {
+        "tags": [
+          "Заказы"
+        ],
+        "summary": "Получение списка заказов",
+        "operationId": "orderList",
+        "parameters": [
+          {
+            "name": "Core2-Apikey",
+            "in": "header",
+            "description": "API ключ контрагента",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "format": "text"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Количество загружаемых заказов",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Отступ от начала",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список всех заказов",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                },
+                "example": {
+                  "total": "38",
+                  "orders": [
+                    {
+                      "id": "99",
+                      "num": "00098",
+                      "status": "completed",
+                      "cost": "0.00",
+                      "currency": "BYN",
+                      "is_cancelled_sw": "N",
+                      "note": "Примечание заказа",
+                      "date_created": "2020-09-25 17:55:08",
+                      "parts": [
+                        {
+                          "num": "21900620209400",
+                          "price": "1.00",
+                          "quantity": "1",
+                          "note": "Примечание запчасти"
+                        },
+                        {
+                          "num": "21900620209500",
+                          "price": "2.30",
+                          "quantity": "1",
+                          "note": "Примечание запчасти 2"
+                        }
+                      ],
+                      "invoices": [
+                        {
+                          "num": "8",
+                          "title": "Счет на оплату",
+                          "price": "3.30",
+                          "currency": "BYN",
+                          "status": "pending",
+                          "date_created": "2020-09-29 18:29:24"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/create": {
+      "post": {
+        "tags": [
+          "Заказы"
+        ],
+        "summary": "Создание нового заказа",
+        "operationId": "orderCreate",
+        "parameters": [
+          {
+            "name": "Core2-Apikey",
+            "in": "header",
+            "description": "API ключ контрагента",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "format": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Объекты входящие в payload запроса",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное создание заказа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/{order_id}/status": {
+      "get": {
+        "tags": [
+          "Заказы"
+        ],
+        "summary": "Получение статуса заказа",
+        "operationId": "orderStatus",
+        "parameters": [
+          {
+            "name": "Core2-Apikey",
+            "in": "header",
+            "description": "API ключ контрагента",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "format": "string"
+            }
+          },
+          {
+            "name": "order_id",
+            "in": "path",
+            "description": "Идентификатор заказа",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "format": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное создание заказа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/part/search": {
+      "post": {
+        "tags": [
+          "Запчасти"
+        ],
+        "summary": "Поиск запчастей",
+        "operationId": "partSearch",
+        "parameters": [
+          {
+            "name": "Core2-Apikey",
+            "in": "header",
+            "description": "API ключ контрагента",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "format": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Объекты входящие в payload запроса",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body_1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное создание заказа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                },
+                "example": {
+                  "total": "2354",
+                  "parts": [
+                    {
+                      "num": "8671000081",
+                      "title": "",
+                      "brand": "Renault",
+                      "quantity": "2"
+                    },
+                    {
+                      "num": "7711425868",
+                      "title": "ЗНАК АВАРИЙНОЙ ОСТАНОВКИ",
+                      "brand": "Renault",
+                      "quantity": "0",
+                      "price": "15"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer"
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Идентфикатор заказа"
+                },
+                "num": {
+                  "type": "string",
+                  "description": "Номер заказа"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Состояние заказа"
+                },
+                "cost": {
+                  "type": "number",
+                  "description": "Общая сумма заказа"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Валюта заказа"
+                },
+                "is_cancelled_sw": {
+                  "type": "string",
+                  "description": "Признак отменен ли заказ"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "Примечание к заказу"
+                },
+                "date_created": {
+                  "type": "string",
+                  "description": "Дата созданеия заказа"
+                },
+                "parts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "num": {
+                        "type": "string",
+                        "description": "Номер запчасти"
+                      },
+                      "price": {
+                        "type": "string",
+                        "description": "Стоимость одной запчасти"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "description": "Количество запчастей"
+                      },
+                      "note": {
+                        "type": "string",
+                        "description": "Примечание к запчасти"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ordercreate_parts": {
+        "type": "object",
+        "properties": {
+          "num": {
+            "type": "string",
+            "description": "Номер запчасти"
+          },
+          "quantity": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Количество заказываемых запчастей",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string",
+            "description": "Примечание к запчасти"
+          }
+        }
+      },
+      "body": {
+        "required": [
+          "num"
+        ],
+        "type": "object",
+        "properties": {
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ordercreate_parts"
+            }
+          },
+          "note": {
+            "type": "string",
+            "description": "Примечание к заказу"
+          }
+        },
+        "example": {
+          "parts": [
+            {
+              "num": "7711785586",
+              "quantity": 10,
+              "note": "Примечание к запчасти"
+            },
+            {
+              "num": "8201461587",
+              "quantity": 2
+            }
+          ],
+          "note": "Примечание к заказу"
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "integer",
+            "description": "Идентификатор созданного заказа"
+          }
+        }
+      },
+      "inline_response_200_2": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Статус заказа"
+          }
+        },
+        "example": {
+          "status": "new"
+        }
+      },
+      "partsearch_part": {
+        "required": [
+          "num"
+        ],
+        "type": "object",
+        "properties": {
+          "num": {
+            "type": "string",
+            "description": "Номер запчасти. Можно указать частично. Обязательный параметр"
+          },
+          "title": {
+            "type": "string",
+            "description": "Название запчасти"
+          },
+          "brand": {
+            "type": "string",
+            "description": "Название бренда"
+          }
+        }
+      },
+      "body_1": {
+        "required": [
+          "parts"
+        ],
+        "type": "object",
+        "properties": {
+          "part": {
+            "$ref": "#/components/schemas/partsearch_part"
+          },
+          "limit": {
+            "maximum": 200,
+            "type": "integer",
+            "description": "Количество отображаемых запчастей",
+            "default": 100
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Отступ от начала"
+          }
+        },
+        "example": {
+          "part": {
+            "num": "7711785586",
+            "brand": "Renault"
+          },
+          "limit": 100,
+          "offset": 0
+        }
+      }
+    }
+  }
+}
