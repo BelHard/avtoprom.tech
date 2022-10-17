@@ -1,0 +1,417 @@
+{
+	"info": {
+		"_postman_id": "51eae0da-d9c0-4deb-8b8c-11901ba9a934",
+		"name": "Autoparts24 API",
+		"description": "Это API преднозначено для клиентов компании ООО Автопромсервис\n\n## Общее описание поведения\n\n1. Ответы от сервера всегда отдаются в формате указанном в заголовке Content-type, либо без данных. Это зависит от логики метода. Преимущественно в формате JSON.\n2. Формат возвращаемых json данных, в случае ошибки, всегда содержит следующие свойства {\"status\": \"error\", \"error_code\":\"xxx\",\"error_message\":\"yyy\"}.\n3. Все адреса начинаются с https://autoparts24.by/api/ordering/v1.0/contractors\n4. Все запросы должны содержать специальный заголовок с api ключом - Core2-Apikey: [APIKEY]\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "1358017-51eae0da-d9c0-4deb-8b8c-11901ba9a934"
+	},
+	"item": [
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "Получение списка заказов",
+					"id": "01b99a32-00ce-4d6e-9bdb-3c3c5255edfd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) API ключ контрагента",
+								"key": "Core2-Apikey",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/order/list?limit=100&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"list"
+							],
+							"query": [
+								{
+									"description": "Количество загружаемых заказов",
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"description": "Отступ от начала",
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "ff22ab8e-e73d-425c-8e4c-2effc63836de",
+							"name": "Список всех заказов",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) API ключ контрагента",
+										"key": "Core2-Apikey",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/order/list?limit=100&offset=0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"order",
+										"list"
+									],
+									"query": [
+										{
+											"description": "Количество загружаемых заказов",
+											"key": "limit",
+											"value": "100"
+										},
+										{
+											"description": "Отступ от начала",
+											"key": "offset",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"total\": 52681703,\n \"orders\": [\n  {\n   \"id\": 66359278,\n   \"num\": \"00098\",\n   \"status\": \"completed\",\n   \"cost\": -35301004.41133719,\n   \"currency\": \"BYN\",\n   \"is_cancelled_sw\": \"N\",\n   \"note\": \"Примечание заказа\",\n   \"date_created\": \"2020-09-25 17:55:08\",\n   \"parts\": [\n    {\n     \"num\": \"21900620209400\",\n     \"price\": \"1.00\",\n     \"quantity\": 1368324.7496213615,\n     \"note\": \"Примечание запчасти\"\n    },\n    {\n     \"num\": \"21900620209500\",\n     \"price\": \"2.30\",\n     \"quantity\": -4229423.02911067,\n     \"note\": \"Примечание запчасти 2\"\n    }\n   ],\n   \"invoices\": [\n    {\n     \"num\": \"8\",\n     \"title\": \"Счет на оплату\",\n     \"price\": \"3.30\",\n     \"currency\": \"BYN\",\n     \"status\": \"pending\",\n     \"date_created\": \"2020-09-29 18:29:24\"\n    }\n   ]\n  }\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Создание нового заказа",
+					"id": "8774094b-3198-4888-a5da-7aa43151b7c9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"description": "(Required) API ключ контрагента",
+								"key": "Core2-Apikey",
+								"value": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"parts\": [\n  {\n   \"num\": \"dolor ipsum dolor\",\n   \"quantity\": 7844487,\n   \"note\": \"irure eiusmod\"\n  },\n  {\n   \"num\": \"incididunt mollit aliqua\",\n   \"quantity\": 54114733,\n   \"note\": \"nisi Duis elit\"\n  }\n ],\n \"note\": \"sint ad\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "d7be8e64-91cf-4529-84e1-1fc505c5b2d0",
+							"name": "Успешное создание заказа",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": "(Required) API ключ контрагента",
+										"key": "Core2-Apikey",
+										"value": ""
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n \"parts\": [\n  {\n   \"num\": \"dolor ipsum dolor\",\n   \"quantity\": 7844487,\n   \"note\": \"irure eiusmod\"\n  },\n  {\n   \"num\": \"incididunt mollit aliqua\",\n   \"quantity\": 54114733,\n   \"note\": \"nisi Duis elit\"\n  }\n ],\n \"note\": \"sint ad\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/order/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"order",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"order_id\": -9857047\n}"
+						}
+					]
+				},
+				{
+					"name": "Получение статуса заказа",
+					"id": "c659320e-5a17-48a4-8400-0fc75700dc7a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"description": "(Required) API ключ контрагента",
+								"key": "Core2-Apikey",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/order/:order_id/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								":order_id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "order_id",
+									"value": "",
+									"description": "(Required) Идентификатор заказа"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "e37e31fd-5a9b-4282-9d01-b2ef1d790955",
+							"name": "Успешное создание заказа",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": "(Required) API ключ контрагента",
+										"key": "Core2-Apikey",
+										"value": ""
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/order/:order_id/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"order",
+										":order_id",
+										"status"
+									],
+									"variable": [
+										{
+											"key": "order_id",
+											"value": "",
+											"description": "(Required) Идентификатор заказа"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "Text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"status\": \"new\"\n}"
+						}
+					]
+				}
+			],
+			"id": "994e0666-4b12-4ffb-b70e-a154ddc7f6ba"
+		},
+		{
+			"name": "Поиск запчастей",
+			"id": "a72f955f-06e5-4c5b-976b-dfed6d52b26d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"description": "(Required) API ключ контрагента",
+						"key": "Core2-Apikey",
+						"value": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"part\": {\n  \"num\": \"deserunt laboris proident consectetur\",\n  \"title\": \"ad enim\",\n  \"brand\": \"incididunt\"\n },\n \"limit\": 100,\n \"offset\": 3731371\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/part/search",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"part",
+						"search"
+					]
+				}
+			},
+			"response": [
+				{
+					"id": "30c752d6-1097-44cc-a357-621341f5d60a",
+					"name": "Успешное создание заказа",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"description": "(Required) API ключ контрагента",
+								"key": "Core2-Apikey",
+								"value": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"part\": {\n  \"num\": \"deserunt laboris proident consectetur\",\n  \"title\": \"ad enim\",\n  \"brand\": \"incididunt\"\n },\n \"limit\": 100,\n \"offset\": 3731371\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/part/search",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"part",
+								"search"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"total\": \"2354\",\n \"parts\": [\n  {\n   \"num\": \"8671000081\",\n   \"title\": \"\",\n   \"brand\": \"Renault\",\n   \"quantity\": \"2\"\n  },\n  {\n   \"num\": \"7711425868\",\n   \"title\": \"ЗНАК АВАРИЙНОЙ ОСТАНОВКИ\",\n   \"brand\": \"Renault\",\n   \"quantity\": \"0\",\n   \"price\": \"15\"\n  }\n ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Emex  https://emex.ru/products/42115112/Atek/35188 ",
+			"id": "1f402a9f-7b15-4372-892c-ea53dec181de",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <FindDetailAdv5 xmlns=\"http://tempuri.org/\">\n      <login>1228901</login>\n      <password>71a07a87</password>\n      <makeLogo></makeLogo>\n      <detailNum>42115112</detailNum>\n      <substLevel>All</substLevel>\n      <substFilter>None</substFilter>\n      <deliveryRegionType>PRI</deliveryRegionType>\n      </FindDetailAdv5>\n  </soap:Body>\n</soap:Envelope>\n",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://ws.emex.ru/EmExService.asmx",
+					"protocol": "http",
+					"host": [
+						"ws",
+						"emex",
+						"ru"
+					],
+					"path": [
+						"EmExService.asmx"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "52d16f83-3fa2-4845-8f52-c4481e3fd08e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "3a811660-ed56-4c84-9e5e-51d1074b95f7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d9164d91-138e-4197-9707-50aadc67c3e1",
+			"key": "baseUrl",
+			"value": "https://autoparts24.by/api/ordering/v1.0/contractors",
+			"type": "any"
+		}
+	]
+}
