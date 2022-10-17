@@ -1,0 +1,207 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Avtoprom.tech",
+        "description": "1. Ответы от сервера всегда отдаются в формате указанном в заголовке __Content-type__, либо без данных. Это зависит от логики метода. Преимущественно в формате JSON.\n2. Формат возвращаемых json данных, в случае ошибки, всегда содержит следующие свойства __{\"error_code\":\"xxx\",\"error_message\":\"yyy\"}__.\n",
+        "version": "1.1"
+    },
+    "servers": [
+        {
+            "url": "https://avtoprom.tech/api/v1.1"
+        },
+        {
+            "url": "http://test2.rdo.belhard.com/api/v1.1"
+        }
+    ],
+    "paths": {
+        "/autoservice/order": {
+            "post": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Создание заявок или заказ-нарядов",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/autoserviceOrder"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "title": "Ошибка",
+                "required": [
+                    "status",
+                    "error_message",
+                    "error_code"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "error_message": {
+                        "type": "string"
+                    },
+                    "error_code": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "autoserviceParts": {
+                "type": "object",
+                "required": [
+                    "nmbr",
+                    "brand",
+                    "quantity"
+                ],
+                "properties": {
+                    "nmbr": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "string"
+                    }
+                }
+            },
+            "autoserviceJobs": {
+                "type": "object",
+                "required": [
+                    "nmbr"
+                ],
+                "properties": {
+                    "nmbr": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "plans": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceJobsPlans"
+                        }
+                    }
+                }
+            },
+            "autoserviceJobsPlans": {
+                "type": "object",
+                "required": [
+                    "date_start",
+                    "date_end"
+                ],
+                "properties": {
+                    "shop_nmbr": {
+                        "type": "string"
+                    },
+                    "place_nmbr": {
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "date_end": {
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                }
+            },
+            "autoserviceOrder": {
+                "required": [
+                    "id",
+                    "type",
+                    "date_order"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "order",
+                            "workorder"
+                        ]
+                    },
+                    "date_order": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_code": {
+                        "type": "string"
+                    },
+                    "vin_nmbr": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "shop_nmbr": {
+                        "type": "string"
+                    },
+                    "place_nmbr": {
+                        "type": "string"
+                    },
+                    "parts": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceParts"
+                        }
+                    },
+                    "jobs": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceJobs"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Клиент",
+            "description": ""
+        },
+        {
+            "name": "Dashboard",
+            "description": ""
+        }
+    ]
+}
