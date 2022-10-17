@@ -143,9 +143,41 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "Core2-Apikey",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "052510d2-d6be-4c0e-98e2-9d96aac485ae",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "19a548c3-fb27-4510-8fed-c010d01d3ac5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
-			"id": "53a8edb8-2801-412b-90fa-609ed1383989",
+			"id": "76ca6a97-341f-4c89-bb3b-24d69451396c",
 			"key": "baseUrl",
 			"value": "https://avtoprom.tech/api/v1.1",
 			"type": "string"
