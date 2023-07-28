@@ -1,0 +1,1138 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Avtoprom.tech",
+        "description": "1. Ответы от сервера всегда отдаются в формате указанном в заголовке __Content-type__, либо без данных. Это зависит от логики метода. Преимущественно в формате JSON.\n2. Формат возвращаемых json данных, в случае ошибки, всегда содержит следующие свойства __{\"error_code\":\"xxx\",\"error_message\":\"yyy\"}__.\n",
+        "version": "1.1"
+    },
+    "servers": [
+        {
+            "url": "https://avtoprom.tech/api/v1.1"
+        },
+        {
+            "url": "http://test2.rdo.belhard.com/api/v1.1"
+        }
+    ],
+    "paths": {
+        "/autoservice/order": {
+            "post": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Создание заявок или заказ-нарядов",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/autoserviceOrder"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/parts/motion": {
+            "post": {
+                "tags": [
+                    "перемещение по данным 1С"
+                ],
+                "summary": "Перемещение запчастей",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/documentsMotion"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/orders/status": {
+            "post": {
+                "tags": [
+                    "заказы"
+                ],
+                "summary": "Обновление статуса заказа",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrdersStatus"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/orders/statusPart": {
+            "post": {
+                "tags": [
+                    "заказы"
+                ],
+                "summary": "Обновление статуса запчасти в заказе",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrdersStatusPart"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/orders/getstatus": {
+            "post": {
+                "tags": [
+                    "Получение статуса по id заказа"
+                ],
+                "summary": "Получение статуса по id заказа",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ordersGetstatus"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/dashboard/expenses": {
+            "post": {
+                "tags": [
+                    "аналитика"
+                ],
+                "summary": "Отчет по затратам предприятия",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DashboardExpenses"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/waybill/coming/internal/create": {
+            "post": {
+                "tags": [
+                    "Накладные"
+                ],
+                "summary": "Создание приходной накладной по данным из внешней системы",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WaybillComingInternalCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/waybill/coming/internal/update": {
+            "post": {
+                "tags": [
+                    "Накладные"
+                ],
+                "summary": "Обновление приходной накладной по данным из внешней системы",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WaybillComingInternalUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/relocation": {
+            "get": {
+                "tags": [
+                    "Перемещения"
+                ],
+                "summary": "получение данных по перемещениям",
+                "description": "",
+                "operationId": "getRelocation",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "спислк перемещений"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Перемещения"
+                ],
+                "summary": "Внесение данных по перемещениям",
+                "description": "",
+                "operationId": "postRelocation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/relocations"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "400": {
+                        "description": "Не удалось найти объекты, связанные с данными запроса"
+                    },
+                    "200": {
+                        "description": "Список идентификаторов перемещений",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/relocationIds"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/relocation/update": {
+
+            "post": {
+                "tags": [
+                    "Редактирование перемещений"
+                ],
+                "summary": "Редактирование перемещений",
+                "description": "",
+                "operationId": "postRelocationUpdate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/relocationsUpdate"
+                            }
+                        }
+                    }
+                },
+
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+
+        "/parts/motiontest": {
+            "get": {
+                "tags": [
+                    "test"
+                ],
+                "parameters": [
+                    {
+                        "name": "test",
+                        "in": "query",
+                        "description": "The name that needs to be fetched. Use user1 for testing. ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "summary": "test",
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "title": "Ошибка",
+                "required": [
+                    "status",
+                    "error_message",
+                    "error_code"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "error_message": {
+                        "type": "string"
+                    },
+                    "error_code": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "autoserviceParts": {
+                "type": "object",
+                "required": [
+                    "nmbr",
+                    "brand",
+                    "quantity"
+                ],
+                "properties": {
+                    "nmbr": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "string"
+                    }
+                }
+            },
+            "autoserviceJobs": {
+                "type": "object",
+                "required": [
+                    "nmbr"
+                ],
+                "properties": {
+                    "nmbr": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "plans": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceJobsPlans"
+                        }
+                    }
+                }
+            },
+            "autoserviceJobsPlans": {
+                "type": "object",
+                "required": [
+                    "date_start",
+                    "date_end"
+                ],
+                "properties": {
+                    "shop_nmbr": {
+                        "type": "string"
+                    },
+                    "place_nmbr": {
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "date_end": {
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                }
+            },
+            "autoserviceOrder": {
+                "required": [
+                    "id",
+                    "type",
+                    "date_order",
+                    "storage_code"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "order",
+                            "workorder"
+                        ]
+                    },
+                    "date_order": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_code": {
+                        "type": "string"
+                    },
+                    "storage_code": {
+                        "type": "string"
+                    },
+                    "vin_nmbr": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "shop_nmbr": {
+                        "type": "string"
+                    },
+                    "place_nmbr": {
+                        "type": "string"
+                    },
+                    "parts": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceParts"
+                        }
+                    },
+                    "jobs": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceJobs"
+                        }
+                    }
+                }
+            },
+            "OrdersStatus": {
+                "type": "object",
+                "required": [
+                    "order_id"
+                ],
+                "properties": {
+                    "order_id": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "parts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ordersStatusParts"
+                        }
+                    }
+                }
+            },
+            "ordersStatusParts": {
+                "type": "object",
+                "properties": {
+                    "num": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    }
+                }
+            },
+            "OrdersStatusPart": {
+                "type": "object",
+                "required": [
+                    "order_id"
+                ],
+                "properties": {
+                    "order_id": {
+                        "type": "number"
+                    },
+                    "parts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ordersStatusPartParts"
+                        }
+                    }
+                }
+            },
+            "ordersStatusPartParts": {
+                "type": "object",
+                "properties": {
+                    "num": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    }
+                }
+            },
+
+            "ordersGetstatus": {
+                "type": "object",
+                "required": [
+                    "order_id"
+                ],
+                "properties": {
+                    "order_id" : {
+                        "type": "number"
+                    }
+                }
+            },
+
+
+
+            "documentsMotion": {
+                "properties": {
+                    "documents": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/documentMotion"
+                        }
+                    }
+                }
+            },
+            "documentMotion": {
+                "type": "object",
+                "required": [
+                    "document_id",
+                    "document_date"
+                ],
+                "properties": {
+                    "document_id": {
+                        "type": "string"
+                    },
+                    "document_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "parts": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/partsMotion"
+                        }
+                    }
+
+                }
+            },
+            "partsMotion": {
+                "type": "object",
+                "required": [
+                    "num",
+                    "brand",
+                    "consignment",
+                    "storage_code",
+                    "storage_target",
+                    "date_motion",
+                    "quantity",
+                    "operation",
+                    "operation_type"
+                ],
+                "properties": {
+                    "num": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+
+                    "brand": {
+                        "type": "string"
+                    },
+                    "consignment": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "storage_code": {
+                        "type": "string"
+                    },
+
+                    "storage_target": {
+                        "type": "string"
+                    },
+
+                    "date_motion": {
+                        "type": "string"
+                    },
+
+                    "quantity": {
+                        "type": "number"
+                    },
+
+                    "quantity_reserved": {
+                        "type": "number"
+                    },
+
+                    "operation": {
+                        "type": "string",
+                        "enum": ["coming", "expense"]
+                    },
+
+                    "operation_type": {
+                        "type": "string"
+                    },
+
+                    "parts_type": {
+                        "type": "string"
+                    },
+
+                    "contractor_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DashboardExpenses": {
+                "type": "object",
+                "properties": {
+                    "period_from": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "period_to": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "organization": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "code": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "departments" : {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/dashboardDepartments"
+                        }
+                    }
+                }
+            },
+            "dashboardDepartments": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "department_code": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "departmentExpenses" : {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/departmentExpense"
+                        }
+                    }
+                }
+            },
+            "departmentExpense": {
+                "type": "object",
+                "properties": {
+                    "sum": {
+                        "type": "number",
+                        "minLength": 1
+                    },
+                    "nameExpense": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "numExpense": {
+                        "type": "string"
+                    }
+                }
+            },
+            "WaybillComingInternalCreate": {
+                "type": "object",
+                "required": [
+                    "document_id",
+                    "num"
+                ],
+                "properties": {
+                    "document_id": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "num": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "date_waybill": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "date_document": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "contractor_ynp": {
+                        "type": "string"
+                    },
+                    "to_storage_code": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/createWaybillsComingInternalProducts"
+                        }
+                    }
+                }
+            },
+            "createWaybillsComingInternalProducts": {
+                "type": "object",
+                "required": [
+                    "article",
+                    "name"
+                ],
+                "properties": {
+                    "article": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "consignment": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "brand": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "count": {
+                        "type": "number"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "price": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "priceTotal": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "priceImport": {
+                        "type": "number",
+                        "minLength": 1
+                    },
+                    "nds": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "ndsPrice": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "ndsTotal": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "price_purchase": {
+                        "type": "number",
+                        "minLength": 1
+                    },
+                    "countPackages": {
+                        "type": "number"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "date_unblocked": {
+                        "type": "string"
+                    }
+                }
+            },
+            "WaybillComingInternalUpdate": {
+                "type": "object",
+                "required": [
+                    "document_id",
+                    "num"
+                ],
+                "properties": {
+                    "waybill_id": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "document_id": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "num": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "date_waybill": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "date_document": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_ynp": {
+                        "type": "string"
+                    },
+                    "to_storage_code": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/updateWaybillsComingInternalProducts"
+                        }
+                    }
+                }
+            },
+            "updateWaybillsComingInternalProducts": {
+                "type": "object",
+                "required": [
+                    "article",
+                    "name"
+                ],
+                "properties": {
+                    "product_id": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "article": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "consignment": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "brand": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "count": {
+                        "type": "number"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength":1
+                    },
+                    "price": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "priceTotal": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "priceImport": {
+                        "type": "number",
+                        "minLength": 1
+                    },
+                    "nds": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "ndsPrice": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "ndsTotal": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "price_purchase": {
+                        "type": "number",
+                        "minLength": 1
+                    },
+                    "countPackages": {
+                        "type": "number"
+                    },
+                    "weight": {
+                        "type": "number",
+                        "minLength":1
+                    },
+                    "date_unblocked": {
+                        "type": "string"
+                    }
+                }
+            },
+            "relocations": {
+                "type": "object",
+                "required": [
+                    "relocation"
+                ],
+                "properties": {
+                    "relocation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/relocation"
+                        }
+                    }
+                }
+            },
+            "relocationsUpdate": {
+                "type": "object",
+                "required": [
+                    "relocation"
+                ],
+                "properties": {
+                    "relocation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/relocationUpdate"
+                        }
+                    }
+                }
+            },
+            "relocationIds": {
+                "type": "object",
+                "required": [
+                    "relocation"
+                ],
+                "properties": {
+                    "relocation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/relocationId"
+                        }
+                    }
+                }
+            },
+            "relocationId": {
+                "type": "object",
+                "required": [
+                    "local_id",
+                    "document_id"
+                ],
+                "properties": {
+                    "local_id": {
+                        "type": "integer"
+                    },
+                    "document_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "relocation": {
+                "type": "object",
+                "required": [
+                    "document_id",
+                    "storage_code_from",
+                    "storage_code_to"
+                ],
+                "properties": {
+                    "document_id": {
+                        "type": "string"
+                    },
+                    "date_waybill": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "storage_code_from": {
+                        "type": "string"
+                    },
+                    "storage_code_to": {
+                        "type": "string"
+                    },
+                    "num": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "type": "string"
+                    },
+                    "date_document": {
+                        "type": "string"
+                    },
+                    "contractor_unp": {
+                        "type": "string"
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/relocationProducts"
+                        }
+                    }
+                }
+            },
+            "relocationUpdate": {
+                "type": "object",
+                "required": [
+                    "local_id",
+                    "document_id",
+                    "storage_code_from",
+                    "storage_code_to"
+                ],
+                "properties": {
+                    "local_id": {
+                        "type": "integer"
+                    },
+                    "document_id": {
+                        "type": "string"
+                    },
+                    "date_waybill": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "storage_code_from": {
+                        "type": "string"
+                    },
+                    "storage_code_to": {
+                        "type": "string"
+                    },
+                    "num": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "type": "string"
+                    },
+                    "date_document": {
+                        "type": "string"
+                    },
+                    "contractor_unp": {
+                        "type": "string"
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/relocationProducts"
+                        }
+                    }
+                }
+            },
+            "relocationProducts": {
+                "type": "object",
+                "required": [
+                    "article",
+                    "brand",
+                    "quantity",
+                    "consignment",
+                    "unit"
+                ],
+                "properties": {
+                    "article": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "number"
+                    },
+                    "consignment": {
+                        "type": "string"
+                    },
+                    "unit": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Клиент",
+            "description": ""
+        },
+        {
+            "name": "Dashboard",
+            "description": ""
+        }
+    ]
+}
