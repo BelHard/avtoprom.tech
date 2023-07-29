@@ -8,9 +8,6 @@
     "servers": [
         {
             "url": "https://avtoprom.tech/api/v1.1"
-        },
-        {
-            "url": "http://test2.rdo.belhard.com/api/v1.1"
         }
     ],
     "paths": {
@@ -1123,8 +1120,20 @@
                     }
                 }
             }
+        },
+        "securitySchemes": {
+            "Core2": {
+                "type": "apiKey",
+                "name": "Core2-Apikey",
+                "in": "header"
+            }
         }
     },
+    "security": [
+        {
+            "Core2": []
+        }
+    ],
     "tags": [
         {
             "name": "Клиент",
