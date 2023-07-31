@@ -14,7 +14,7 @@
 					"name": "order",
 					"item": [
 						{
-							"name": "Создание заявок или заказ-нарядов",
+							"name": "Создание заказ-нарядов",
 							"id": "dde65b3a-8352-4ed0-aab0-d427680ee163",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
@@ -155,7 +155,8 @@
 					"id": "4582ae42-8d6d-48de-a446-54a1ffad3a81"
 				}
 			],
-			"id": "571c59f1-7433-4e67-8208-743c2698ea15"
+			"id": "571c59f1-7433-4e67-8208-743c2698ea15",
+			"description": "Модуль Автосервис"
 		},
 		{
 			"name": "parts",
