@@ -16,7 +16,7 @@
                 "tags": [
                     "Автосервис"
                 ],
-                "summary": "Создание заказ-нарядов",
+                "summary": "Создание заявок или заказ-нарядов",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -44,6 +44,91 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/autoservice/orders": {
+            "get": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "получение данных о заказнарядах за указанное к-во дней",
+                "description": "",
+                "operationId": "getAutoserviceOrders",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "список заказ-нарядов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/autoserviceOrders"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Создание заказ-нарядов",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/autoserviceOrders"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/autoserviceOrderIds"
                                 }
                             }
                         }
@@ -217,7 +302,7 @@
                 "tags": [
                     "Перемещения"
                 ],
-                "summary": "получение данных по перемещениям",
+                "summary": "получение данных по перемещениям за указанное к-во дней",
                 "description": "",
                 "operationId": "getRelocation",
                 "parameters": [
@@ -237,7 +322,14 @@
                         "description": "Invalid input"
                     },
                     "200": {
-                        "description": "спислк перемещений"
+                        "description": "список перемещений",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/relocations"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -1116,6 +1208,49 @@
                         "type": "string"
                     },
                     "unit": {
+                        "type": "string"
+                    }
+                }
+            },
+            "autoserviceOrders": {
+                "type": "object",
+                "required": [
+                    "orders"
+                ],
+                "properties": {
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceOrder"
+                        }
+                    }
+                }
+            },
+            "autoserviceOrderIds": {
+                "type": "object",
+                "required": [
+                    "orders"
+                ],
+                "properties": {
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/localId"
+                        }
+                    }
+                }
+            },
+            "localId": {
+                "type": "object",
+                "required": [
+                    "local_id",
+                    "document_id"
+                ],
+                "properties": {
+                    "local_id": {
+                        "type": "integer"
+                    },
+                    "document_id": {
                         "type": "string"
                     }
                 }
