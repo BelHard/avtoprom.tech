@@ -9,7 +9,7 @@ id = a40547f1-5ffc-4493-932d-7cbf04e15f6a
 
 [config.relations.collections]
 rootDirectory = postman/collections
-files[] = {"id":"1358017-b9c93768-db8b-46e1-966b-bbb560bf65b8","path":"Avtoprom.tech(1).json","metaData":{"generateCollectionPreferences":"{\"folderStrategy\":\"Paths\",\"includeDeprecated\":true,\"includeAuthInfoInExample\":true,\"keepImplicitHeaders\":false,\"requestNameSource\":\"Fallback\",\"indentCharacter\":\"Space\",\"requestParametersResolution\":\"Example\",\"exampleParametersResolution\":\"Example\",\"enableOptionalParameters\":true,\"collapseFolders\":true,\"optimizeConversion\":true,\"updateCollectionSync\":true}"}}
+files[] = {"id":"1358017-92e524a1-4d18-4b2e-9c57-61e7677d3d66","path":"Avtoprom.tech.json","metaData":{"generateCollectionPreferences":"{\"requestNameSource\":\"Fallback\",\"indentCharacter\":\"Space\",\"parametersResolution\":\"Schema\",\"folderStrategy\":\"Paths\",\"includeAuthInfoInExample\":true,\"enableOptionalParameters\":true,\"keepImplicitHeaders\":false,\"includeDeprecated\":true,\"alwaysInheritAuthentication\":false,\"updateCollectionSync\":true,\"requestParametersResolution\":\"Schema\",\"exampleParametersResolution\":\"Schema\"}"}}
 
 [config.relations.collections.metaData]
 
