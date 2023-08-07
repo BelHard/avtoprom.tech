@@ -56,7 +56,7 @@
                 "tags": [
                     "Автосервис"
                 ],
-                "summary": "получение данных о заказнарядах за указанное к-во дней",
+                "summary": "Получение данных о заказнарядах за указанное к-во дней",
                 "description": "",
                 "operationId": "getAutoserviceOrders",
                 "parameters": [
