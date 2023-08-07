@@ -16,7 +16,7 @@
                 "tags": [
                     "Автосервис"
                 ],
-                "summary": "Создание заявок или заказ-нарядов",
+                "summary": "Создание заказ-нарядов",
                 "requestBody": {
                     "required": true,
                     "content": {
