@@ -17,6 +17,7 @@
                     "Автосервис"
                 ],
                 "summary": "Создание заявок или заказ-нарядов",
+                "deprecated": true,
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -44,6 +45,55 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Создание и обновление заказ-нарядов",
+                "description": "Для обновление, нужно передать local_id. Если local_id = 0 будет создан новый заказ-наряд",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/autoserviceOrder2"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Заказ-наряд создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/localId"
                                 }
                             }
                         }
@@ -80,7 +130,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/autoserviceOrders"
+                                    "$ref": "#/components/schemas/autoserviceOrders2"
                                 }
                             }
                         }
@@ -97,12 +147,22 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/autoserviceOrders"
+                                "$ref": "#/components/schemas/autoserviceOrders2"
                             }
                         }
                     }
                 },
                 "responses": {
+                    "200": {
+                        "description": "Заказ-наряды созданы",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/autoserviceOrderIds"
+                                }
+                            }
+                        }
+                    },
                     "400": {
                         "description": "Invalid input parameters",
                         "content": {
@@ -119,16 +179,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/autoserviceOrderIds"
                                 }
                             }
                         }
@@ -157,6 +207,16 @@
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "Данные заказ-наряда",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/autoserviceOrder2"
+                                }
+                            }
+                        }
+                    },
                     "400": {
                         "description": "Invalid input parameters",
                         "content": {
@@ -183,29 +243,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "Статус заказ-наряда",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "id",
-                                        "status"
-                                    ],
-                                    "properties": {
-                                        "id": {
-                                            "type": "string",
-                                            "description": "id документа в 1С"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -280,7 +317,8 @@
                                             "description": "id документа в 1С"
                                         },
                                         "status": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "код статуса заказ-наряда"
                                         }
                                     }
                                 }
@@ -288,35 +326,201 @@
                         }
                     }
                 }
-            }
-        },
-        "/parts/motion": {
-            "post": {
+            },
+            "put": {
                 "tags": [
-                    "перемещение по данным 1С"
+                    "Автосервис"
                 ],
-                "summary": "Перемещение запчастей",
+                "summary": "обновление статуса заказ-наряда",
+                "operationId": "putAutoserviceOrderStatus",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/documentsMotion"
+                                "type": "object",
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status" : {
+                                        "type": "string",
+                                        "description": "код статуса заказ-наряда"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "local_id заказ-наряда",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Статус обновлен"
+                    },
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Заказ-наряд не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/autoservice/calc": {
+            "put": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Создание и обновление калькуляций",
+                "description": "Для обновление, нужно передать local_id. Если local_id = 0 будет создан новая калькуляция",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/autoserviceCalc"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "405": {
-                        "description": "Invalid input"
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Калькуляция создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/localId"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
+        "/autoservice/calc/{id}": {
+            "get": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Получение информации о калькуляции",
+                "description": "Возвращает все данные калькуляции",
+                "operationId": "getAutoserviceCalc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "local_id калькуляции",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Содержимое калькуляции",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/autoserviceCalc"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
         "/orders/status": {
             "post": {
                 "tags": [
-                    "заказы"
+                    "Заказы клиентов"
                 ],
                 "summary": "Обновление статуса заказа",
                 "requestBody": {
@@ -339,7 +543,7 @@
         "/orders/statusPart": {
             "post": {
                 "tags": [
-                    "заказы"
+                    "Заказы клиентов"
                 ],
                 "summary": "Обновление статуса запчасти в заказе",
                 "requestBody": {
@@ -362,7 +566,7 @@
         "/orders/getstatus": {
             "post": {
                 "tags": [
-                    "Получение статуса по id заказа"
+                    "Заказы клиентов"
                 ],
                 "summary": "Получение статуса по id заказа",
                 "requestBody": {
@@ -382,10 +586,11 @@
                 }
             }
         },
+
         "/dashboard/expenses": {
             "post": {
                 "tags": [
-                    "аналитика"
+                    "Аналитика"
                 ],
                 "summary": "Отчет по затратам предприятия",
                 "requestBody": {
@@ -405,10 +610,11 @@
                 }
             }
         },
+
         "/waybill/coming/internal/create": {
             "post": {
                 "tags": [
-                    "Накладные"
+                    "Склады"
                 ],
                 "summary": "Создание приходной накладной по данным из внешней системы",
                 "requestBody": {
@@ -431,7 +637,7 @@
         "/waybill/coming/internal/update": {
             "post": {
                 "tags": [
-                    "Накладные"
+                    "Склады"
                 ],
                 "summary": "Обновление приходной накладной по данным из внешней системы",
                 "requestBody": {
@@ -451,10 +657,81 @@
                 }
             }
         },
+        "/parts/reserve": {
+            "get": {
+                "tags": [
+                    "Склады"
+                ],
+                "summary": "Получение списка резервов на складах за указанный период",
+                "description" : "Лимит резервов в одном запросе 10000\n\nОписание значений поля source_type:\n1. __order__ - заказ покупателя\n2. __autoservice_calc__ - калькуляция\n3.  __autoservice_workorder__ - заказ-наряд\n4.  __storage_order__ - заказ со склада\n\n Описание значений поля status:\n1. __new__ - новый\n2. __confirmed__ - подтвержден\n3. __managed__ - проверен\n4. __completed__ - выполнен\n5. __cancel__ - отменен",
+                "parameters": [
+                    {
+                        "name": "date_start",
+                        "in": "query",
+                        "description": "Дата начала",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "datetime",
+                            "example": "YYYY-MM-DD hh:mm:ss"
+                        }
+                    },
+                    {
+                        "name": "date_end",
+                        "in": "query",
+                        "description": "Дата окончания",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "datetime",
+                            "example": "YYYY-MM-DD hh:mm:ss"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список резервов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/storageReserves"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid date format"
+                    }
+                }
+            }
+        },
+        "/parts/motion": {
+            "post": {
+                "tags": [
+                    "Склады"
+                ],
+                "summary": "Перемещение запчастей",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/documentsMotion"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
         "/relocation": {
             "get": {
                 "tags": [
-                    "Перемещения"
+                    "Склады"
                 ],
                 "summary": "получение данных по перемещениям за указанное к-во дней",
                 "description": "",
@@ -489,7 +766,7 @@
             },
             "post": {
                 "tags": [
-                    "Перемещения"
+                    "Склады"
                 ],
                 "summary": "Внесение данных по перемещениям",
                 "description": "",
@@ -524,12 +801,10 @@
                 }
             }
         },
-
         "/relocation/update": {
-
             "post": {
                 "tags": [
-                    "Редактирование перемещений"
+                    "Склады"
                 ],
                 "summary": "Редактирование перемещений",
                 "description": "",
@@ -552,12 +827,12 @@
                 }
             }
         },
-
         "/parts/motiontest": {
             "get": {
                 "tags": [
-                    "test"
+                    "Склады"
                 ],
+                "deprecated": true,
                 "parameters": [
                     {
                         "name": "test",
@@ -569,7 +844,7 @@
                         }
                     }
                 ],
-                "summary": "test",
+                "summary": "Test",
                 "responses": {
                     "405": {
                         "description": "Invalid input"
@@ -609,12 +884,15 @@
                 ],
                 "properties": {
                     "nmbr": {
+                        "description": "номер запчасти",
                         "type": "string"
                     },
                     "brand": {
+                        "description": "брэнд запчасти",
                         "type": "string"
                     },
                     "quantity": {
+                        "description": "количество",
                         "type": "string"
                     }
                 }
@@ -626,17 +904,28 @@
                 ],
                 "properties": {
                     "nmbr": {
+                        "description": "номер по каталогу из 1С",
+                        "type": "string"
+                    },
+                    "code": {
+                        "description": "код работы 1С",
                         "type": "string"
                     },
                     "title": {
+                        "description": "наименование работы",
                         "type": "string"
                     },
                     "note": {
+                        "description": "примечание",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "Статус работы",
                         "type": "string"
                     },
                     "plans": {
                         "type": "array",
-                        "items":{
+                        "items": {
                             "$ref": "#/components/schemas/autoserviceJobsPlans"
                         }
                     }
@@ -644,22 +933,23 @@
             },
             "autoserviceJobsPlans": {
                 "type": "object",
+                "description": "запланированные работы",
                 "required": [
                     "date_start",
                     "date_end"
                 ],
                 "properties": {
-                    "shop_nmbr": {
-                        "type": "string"
-                    },
                     "place_nmbr": {
+                        "description": "код рабочего места из 1С",
                         "type": "string"
                     },
                     "date_start": {
+                        "description": "время начала работы",
                         "type": "string",
                         "format": "datetime"
                     },
                     "date_end": {
+                        "description": "время окончания работы",
                         "type": "string",
                         "format": "datetime"
                     }
@@ -669,8 +959,7 @@
                 "required": [
                     "id",
                     "type",
-                    "date_order",
-                    "storage_code"
+                    "date_order"
                 ],
                 "properties": {
                     "id": {
@@ -715,6 +1004,142 @@
                         "type": "array",
                         "items":{
                             "$ref": "#/components/schemas/autoserviceJobs"
+                        }
+                    }
+                }
+            },
+            "autoserviceOrder2": {
+                "required": [
+                    "id",
+                    "date_order",
+                    "shop_nmbr",
+                    "employee_code"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "id или номер из 1C",
+                        "type": "string"
+                    },
+                    "local_id": {
+                        "description": "постоянный id из web",
+                        "type": "integer"
+                    },
+                    "date_order": {
+                        "description": "дата заказ-наряда",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_code": {
+                        "description": "код контрагента из 1С",
+                        "type": "string"
+                    },
+                    "employee_code": {
+                        "description": "код мастера-приемщика из 1С",
+                        "type": "string"
+                    },
+                    "vin_nmbr": {
+                        "description": "VIN автомобиля",
+                        "type": "string"
+                    },
+                    "note": {
+                        "description": "комментарий к заказ-наряду",
+                        "type": "string"
+                    },
+                    "shop_nmbr": {
+                        "description": "код цеха из 1с",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "статус заказ-наряда",
+                        "type": "string"
+                    },
+                    "parts": {
+                        "description": "запчасти, входящие в заказ-наряд",
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceParts"
+                        }
+                    },
+                    "jobs": {
+                        "description": "работы, входящие в заказ-наряд",
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceJobs"
+                        }
+                    }
+                }
+            },
+            "autoserviceCalc": {
+                "required": [
+                    "id",
+                    "date_calc",
+                    "shop_nmbr"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "local_id": {
+                        "type": "integer"
+                    },
+                    "date_calc": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_code": {
+                        "type": "string"
+                    },
+                    "vin_nmbr": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "shop_nmbr": {
+                        "type": "string"
+                    },
+                    "employee_code": {
+                        "description": "код мастера-приемщика из 1С",
+                        "type": "string"
+                    },
+                    "parts": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceParts"
+                        }
+                    },
+                    "jobs": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/autoserviceJobs"
+                        }
+                    }
+                }
+            },
+            "autoserviceOrders2": {
+                "type": "object",
+                "required": [
+                    "orders"
+                ],
+                "properties": {
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceOrder2"
+                        }
+                    }
+                }
+            },
+            "autoserviceOrderIds": {
+                "type": "object",
+                "required": [
+                    "orders"
+                ],
+                "properties": {
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/localId"
                         }
                     }
                 }
@@ -784,7 +1209,6 @@
                     }
                 }
             },
-
             "ordersGetstatus": {
                 "type": "object",
                 "required": [
@@ -796,9 +1220,6 @@
                     }
                 }
             },
-
-
-
             "documentsMotion": {
                 "properties": {
                     "documents": {
@@ -1366,34 +1787,6 @@
                     }
                 }
             },
-            "autoserviceOrders": {
-                "type": "object",
-                "required": [
-                    "orders"
-                ],
-                "properties": {
-                    "orders": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/autoserviceOrder"
-                        }
-                    }
-                }
-            },
-            "autoserviceOrderIds": {
-                "type": "object",
-                "required": [
-                    "orders"
-                ],
-                "properties": {
-                    "orders": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/localId"
-                        }
-                    }
-                }
-            },
             "localId": {
                 "type": "object",
                 "required": [
@@ -1406,6 +1799,77 @@
                     },
                     "document_id": {
                         "type": "string"
+                    }
+                }
+            },
+            "storageReserves": {
+                "type": "object",
+                "required": [
+                    "reserves"
+                ],
+                "properties": {
+                    "reserves": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/storageReserve"
+                        }
+                    }
+                }
+            },
+            "storageReserve": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "part_num": {
+                        "type": "string"
+                    },
+                    "part_brand": {
+                        "type": "string"
+                    },
+                    "part_quantity": {
+                        "type": "string"
+                    },
+                    "storage_code": {
+                        "type": "string"
+                    },
+                    "consignment": {
+                        "type": "string"
+                    },
+                    "source_type": {
+                        "type": "string",
+                        "enum": [
+                            "order",
+                            "autoservice_calc",
+                            "autoservice_workorder",
+                            "storage_order"
+                        ],
+                        "description" : "1. order - заказ покупателя\n2. autoservice_calc - калькуляция\n3. autoservice_workorder - заказ-наряд\n4. storage_order - заказ со склада"
+                    },
+                    "source_id": {
+                        "type": "integer"
+                    },
+                    "buyer_code": {
+                        "type": "string"
+                    },
+                    "vin_num": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "new",
+                            "confirmed",
+                            "managed",
+                            "completed",
+                            "cancel"
+                        ],
+                        "description" : "1. new - новый\n2. confirmed - подтвержден\n3. managed - проверен\n4. completed - выполнен\n5. cancel - отменен"
+                    },
+                    "date_create": {
+                        "type": "string",
+                        "format": "datetime"
                     }
                 }
             }
@@ -1421,16 +1885,6 @@
     "security": [
         {
             "Core2": []
-        }
-    ],
-    "tags": [
-        {
-            "name": "Клиент",
-            "description": ""
-        },
-        {
-            "name": "Dashboard",
-            "description": ""
         }
     ]
 }
