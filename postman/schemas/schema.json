@@ -106,14 +106,24 @@
                 "tags": [
                     "Автосервис"
                 ],
-                "summary": "получение данных о заказнарядах за указанное к-во дней",
-                "description": "",
+                "summary": "получение данных о заказнарядах за указанное к-во дней или минут",
+                "description": "Можно задавать параметры days или mins. В обоих случаях возвращается информация о заказ-нарядах, поторые были созданы или изменены в пределах указанного значения, считая от даты запроса",
                 "operationId": "getAutoserviceOrders",
                 "parameters": [
                     {
                         "name": "days",
                         "in": "query",
                         "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "mins",
+                        "in": "query",
+                        "description": "Количество минут",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -352,18 +362,6 @@
                         }
                     }
                 },
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "local_id заказ-наряда",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "minimum": 1
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Статус обновлен"
@@ -394,6 +392,121 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carcenter/event": {
+            "put": {
+                "tags": [
+                    "Автосалон"
+                ],
+                "summary": "Создание и обновление событий клиента автосалона",
+                "description": "Для обновление, нужно передать local_id. Если local_id = 0 будет создано новое событие",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/carcenterEvent"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Событие создано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/localId"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carcenter/event/{id}": {
+            "get": {
+                "tags": [
+                    "Автосалон"
+                ],
+                "summary": "Получение события автосалона",
+                "description": "Возвращает все данные о событии",
+                "operationId": "getCarcenterEvent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "local_id события",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Содержимое события",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/carcenterEvent"
                                 }
                             }
                         }
@@ -509,6 +622,182 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/autoserviceCalc"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auto": {
+            "get": {
+                "tags": [
+                    "Автомобили"
+                ],
+                "summary": "Получение автомобилей",
+                "description": "Возвращает карточки автомобилей без mongo_code",
+                "operationId": "getAutoCards",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "номер страницы",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Содержимое карточки автомобиля",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "page",
+                                        "last_page"
+                                    ],
+                                    "properties": {
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "last_page": {
+                                            "type": "integer"
+                                        },
+                                        "autoCards": {
+                                            "type": "array",
+                                            "items":{
+                                                "type": "object",
+                                                "properties": {
+                                                    "local_id": {
+                                                        "description": "id автомобиля",
+                                                        "type": "number"
+                                                    },
+                                                    "vin_type": {
+                                                        "description": "Вин-тип",
+                                                        "type": "string"
+                                                    },
+                                                    "govnum": {
+                                                        "description": "Гос. номер",
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buyers": {
+            "get": {
+                "tags": [
+                    "Покупатели"
+                ],
+                "summary": "Получение покупателей",
+                "description": "Возвращает покупателй без ext_id",
+                "operationId": "getBuyers",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "номер страницы",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Содержимое покупателей",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "page",
+                                        "last_page"
+                                    ],
+                                    "properties": {
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "last_page": {
+                                            "type": "integer"
+                                        },
+                                        "buyers": {
+                                            "type": "array",
+                                            "items":{
+                                                "$ref": "#/components/schemas/buyer"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -875,6 +1164,92 @@
                 },
                 "type": "object"
             },
+            "autoserviceSpecs": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "quantity"
+                ],
+                "properties": {
+                    "code": {
+                        "description": "номер спецификации",
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "description": "количество",
+                        "type": "string"
+                    }
+                }
+            },
+            "autoserviceClaims": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "description": "Описание жалобы",
+                        "type": "string"
+                    },
+                    "reasons": {
+                        "description": "Причина неисправности",
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "description": "код 1С",
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "conditions": {
+                        "description": "Условия проявления неисправности",
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "description": "код 1С",
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "frequency": {
+                        "description": "Частота проявления неисправности",
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "description": "код 1С",
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "periods": {
+                        "description": "Период обнаружения неисправности",
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "description": "код 1С",
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "note": {
+                        "description": "примечание",
+                        "type": "string"
+                    },
+                    "date": {
+                        "description": "дата создания записи",
+                        "type": "string"
+                    }
+                }
+            },
             "autoserviceParts": {
                 "type": "object",
                 "required": [
@@ -894,6 +1269,15 @@
                     "quantity": {
                         "description": "количество",
                         "type": "string"
+                    },
+                    "spec_code": {
+                        "description": "код спецификации",
+                        "type": "string"
+                    },
+                    "bonus_point": {
+                        "description": "Бонусных балов к начислению",
+                        "type": "number",
+                        "format": "float"
                     }
                 }
             },
@@ -923,6 +1307,26 @@
                         "description": "Статус работы",
                         "type": "string"
                     },
+                    "spec_code": {
+                        "description": "код спецификации",
+                        "type": "string"
+                    },
+                    "master": {
+                        "description": "мастер цеха, ответственный за работу",
+                        "type": "string"
+                    },
+                    "bonus_point": {
+                        "description": "Бонусных балов к начислению",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "executors": {
+                        "description": "исполнители",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceJobsExec"
+                        }
+                    },
                     "plans": {
                         "type": "array",
                         "items": {
@@ -931,10 +1335,52 @@
                     }
                 }
             },
+            "autoserviceJobsExec": {
+                "type": "object",
+                "description": "исполнители работ заказ-наряда",
+                "required": [
+                    "worker_code"
+                ],
+                "properties": {
+                    "worker_code": {
+                        "description": "код сотрудника",
+                        "type": "string"
+                    },
+                    "involve": {
+                        "description": "процент участия исполнителя в работе",
+                        "type": "string"
+                    }
+                }
+            },
             "autoserviceJobsPlans": {
                 "type": "object",
                 "description": "запланированные работы",
                 "required": [
+                    "date_start",
+                    "date_end"
+                ],
+                "properties": {
+                    "place_nmbr": {
+                        "description": "код рабочего места из 1С",
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "description": "время начала работы",
+                        "type": "string",
+                        "format": "datetime"
+                    },
+                    "date_end": {
+                        "description": "время окончания работы",
+                        "type": "string",
+                        "format": "datetime"
+                    }
+                }
+            },
+            "autoserviceBooking": {
+                "type": "object",
+                "description": "забронированной время на рабочих местах",
+                "required": [
+                    "place_nmbr",
                     "date_start",
                     "date_end"
                 ],
@@ -1053,22 +1499,222 @@
                         "description": "статус заказ-наряда",
                         "type": "string"
                     },
+                    "bonus_contractor_code": {
+                        "description": "код владельца бонусной карты из 1С",
+                        "type": "string"
+                    },
+                    "is_confirmed_bonus_card": {
+                        "description": "Подтвержден ли факт использования бонусной карты владельцем",
+                        "type": "string",
+                        "enum": ["Y", "N"]
+                    },
+                    "bonus_points_spent": {
+                        "description": "Количество баллов для списания в заказ-наряде",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "claims": {
+                        "description": "жалобы для заказ-наряда",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceClaims"
+                        }
+                    },
                     "parts": {
                         "description": "запчасти, входящие в заказ-наряд",
                         "type": "array",
-                        "items":{
+                        "items": {
                             "$ref": "#/components/schemas/autoserviceParts"
                         }
                     },
                     "jobs": {
                         "description": "работы, входящие в заказ-наряд",
                         "type": "array",
-                        "items":{
+                        "items": {
                             "$ref": "#/components/schemas/autoserviceJobs"
                         }
                     }
                 }
             },
+            "carcenterEvent": {
+                "required": [
+                    "id",
+                    "date_event",
+                    "event_type",
+                    "contractor_code"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "local_id": {
+                        "type": "integer"
+                    },
+                    "date_event": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_code": {
+                        "type": "string"
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "enum": [
+                            "new",
+                            "selection",
+                            "tradein"
+                        ],
+                        "description" : "new - событие автосалона\nselection - клиент подбирает авто в салоне\ntradein - обормление tradein"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "event_name": {
+                        "type": "string"
+                    },
+                    "contact_number": {
+                        "type": "string"
+                    },
+                    "main_manager": {
+                        "description": "код сотрудника из 1С",
+                        "type": "string"
+                    }
+                }
+            },
+            "buyer": {
+                "type": "object",
+                "properties": {
+                    "local_id": {
+                        "description": "id покупателя",
+                        "type": "number"
+                    },
+                    "contractor_id": {
+                        "description": "id контрагента",
+                        "type": "number"
+                    },
+                    "user_id": {
+                        "description": "id пользователя",
+                        "type": "number"
+                    },
+                    "buyer_storage_id": {
+                        "description": "id склада покупателя",
+                        "type": "number"
+                    },
+                    "title": {
+                        "description": "ФИО покупателя или название организации",
+                        "type": "string"
+                    },
+                    "bonus_num": {
+                        "description": "бонусный номер",
+                        "type": "string"
+                    },
+                    "_bonus_is_active": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "fname": {
+                        "description": "Имя покупателя",
+                        "type": "string"
+                    },
+                    "lname": {
+                        "description": "Фамилия покупателя",
+                        "type": "string"
+                    },
+                    "mname": {
+                        "description": "Отчество покупателя",
+                        "type": "string"
+                    },
+                    "apikey": {
+                        "description": "api ключ",
+                        "type": "string"
+                    },
+                    "unp": {
+                        "description": "UNP покупателя",
+                        "type": "number"
+                    },
+                    "region": {
+                        "description": "Регион покупателя ru/by",
+                        "type": "string"
+                    },
+                    "address": {
+                        "description": "Полный адрес покупателя",
+                        "type": "string"
+                    },
+                    "address_area": {
+                        "description": "Область",
+                        "type": "string"
+                    },
+                    "address_district": {
+                        "description": "Район",
+                        "type": "string"
+                    },
+                    "address_city": {
+                        "description": "Город",
+                        "type": "string"
+                    },
+                    "address_street": {
+                        "description": "Улица",
+                        "type": "string"
+                    },
+                    "address_building": {
+                        "description": "Номер дома",
+                        "type": "string"
+                    },
+                    "address_korp": {
+                        "description": "Корпус",
+                        "type": "string"
+                    },
+                    "address_apart": {
+                        "description": "Квартира",
+                        "type": "string"
+                    },
+                    "address_index": {
+                        "description": "Индекс",
+                        "type": "number"
+                    },
+                    "phone": {
+                        "description": "Телефон",
+                        "type": "string"
+                    },
+                    "phones_additional": {
+                        "description": "Дополнительные номера телефона",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Тип покупателя",
+                        "type": "string"
+                    },
+                    "payer_type": {
+                        "description": "Тип плательщика",
+                        "type": "string"
+                    },
+                    "is_active_sw": {
+                        "description": "Активен ли покупатель",
+                        "type": "string"
+                    },
+                    "discount": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "comment": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "date_created": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "date_last_update": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+
             "autoserviceCalc": {
                 "required": [
                     "id",
@@ -1102,6 +1748,10 @@
                         "description": "код мастера-приемщика из 1С",
                         "type": "string"
                     },
+                    "status": {
+                        "description": "состояние калькуляции",
+                        "type": "string"
+                    },
                     "parts": {
                         "type": "array",
                         "items":{
@@ -1112,6 +1762,13 @@
                         "type": "array",
                         "items":{
                             "$ref": "#/components/schemas/autoserviceJobs"
+                        }
+                    },
+                    "booking": {
+                        "description": "время бронирования постов",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceBooking"
                         }
                     }
                 }
