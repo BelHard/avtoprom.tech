@@ -514,6 +514,112 @@
                 }
             }
         },
+        "/carcenter/events": {
+            "get": {
+                "tags": [
+                    "Автосалон"
+                ],
+                "summary": "получение данных о событиях автосалона за указанное к-во дней или минут",
+                "description": "Можно задавать параметры days или mins. В обоих случаях возвращается информация о событиях, поторые были созданы или изменены в пределах указанного значения, считая от даты запроса",
+                "operationId": "getCarcenterEvents",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "mins",
+                        "in": "query",
+                        "description": "Количество минут",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "список заказ-нарядов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "events"
+                                    ],
+                                    "properties": {
+                                        "orders": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/carcenterEvent"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Автосервис"
+                ],
+                "summary": "Создание заказ-нарядов",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/autoserviceOrders2"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Заказ-наряды созданы",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/autoserviceOrderIds"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/autoservice/calc": {
             "put": {
                 "tags": [
@@ -705,12 +811,16 @@
                                                         "description": "id автомобиля",
                                                         "type": "number"
                                                     },
-                                                    "vin_type": {
-                                                        "description": "Вин-тип",
+                                                    "vin_num": {
+                                                        "description": "Вин номер",
                                                         "type": "string"
                                                     },
                                                     "govnum": {
                                                         "description": "Гос. номер",
+                                                        "type": "string"
+                                                    },
+                                                    "owner_code": {
+                                                        "description": "Код владельца в 1С",
                                                         "type": "string"
                                                     }
                                                 }
@@ -1017,6 +1127,158 @@
                 }
             }
         },
+        "/parts/analogs": {
+            "put": {
+                "tags": [
+                    "Запчасти"
+                ],
+                "summary": "Аналоги запчастей",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/partAnalogs"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное сохранение"
+                    },
+                    "400": {
+                        "description": "Invalid input parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shipment": {
+            "get": {
+                "tags": [
+                    "Отгрузки"
+                ],
+                "summary": "получение данных по отгрузкам",
+                "description": "",
+                "operationId": "getShipment",
+                "parameters": [
+                    {
+                        "name": "storage_code",
+                        "in": "query",
+                        "description": "код склада",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "список отгрузок",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "shipment"
+                                    ],
+                                    "properties": {
+                                        "shipment": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": [
+                                                    "local_id",
+                                                    "storage",
+                                                    "recipient_type"
+                                                ],
+                                                "properties": {
+                                                    "local_id": {
+                                                        "description": "id отгрузки",
+                                                        "type": "number"
+                                                    },
+                                                    "storage": {
+                                                        "description": "код склада отгрузки",
+                                                        "type": "string"
+                                                    },
+                                                    "recipient_type": {
+                                                        "description": "вид получателя",
+                                                        "type": "string"
+                                                    },
+                                                    "recipient_id": {
+                                                        "description": "local_id получателя (например заказ-наряда, для типа отгрузки 'workorder')",
+                                                        "type": "string"
+                                                    },
+                                                    "recipient": {
+                                                        "description": "название получателя",
+                                                        "type": "string"
+                                                    },
+                                                    "substrate": {
+                                                        "description": "вид отгрузки",
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "expense",
+                                                            "workorder"
+                                                        ]
+                                                    },
+                                                    "date_created": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "parts": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "brand",
+                                                                "num",
+                                                                "quantity"
+                                                            ],
+                                                            "properties": {
+                                                                "brand": {
+                                                                    "type": "string"
+                                                                },
+                                                                "num": {
+                                                                    "type": "string"
+                                                                },
+                                                                "quantity": {
+                                                                    "type": "number"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/relocation": {
             "get": {
                 "tags": [
@@ -1184,6 +1446,10 @@
             "autoserviceClaims": {
                 "type": "object",
                 "properties": {
+                    "local_id": {
+                        "description": "уникальный ID",
+                        "type": "integer"
+                    },
                     "text": {
                         "description": "Описание жалобы",
                         "type": "string"
@@ -1246,6 +1512,87 @@
                     },
                     "date": {
                         "description": "дата создания записи",
+                        "type": "string"
+                    }
+                }
+            },
+            "autoserviceControl": {
+                "type": "object",
+                "properties": {
+                    "claim_local_id": {
+                        "description": "внутренний id жалобы клиента",
+                        "type": "integer"
+                    },
+                    "remark": {
+                        "description": "Замечания по работам",
+                        "type": "string"
+                    },
+                    "need": {
+                        "description": "Необходимо",
+                        "type": "string"
+                    },
+                    "comment": {
+                        "description": "Примечание",
+                        "type": "string"
+                    },
+                    "exec": {
+                        "description": "Выполнение",
+                        "type": "string",
+                        "enum": [
+                            "Y",
+                            "N"
+                        ]
+                    },
+                    "warranty": {
+                        "description": "Гарантия",
+                        "type": "string",
+                        "enum": [
+                            "Y",
+                            "N"
+                        ]
+                    },
+                    "diagnostic": {
+                        "description": "Диагностика",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceControlDiagnostic"
+                        }
+                    }
+                }
+            },
+            "autoserviceControlDiagnostic": {
+                "type": "object",
+                "required": [
+                    "exec",
+                    "warranty"
+                ],
+                "properties": {
+                    "stage": {
+                        "description": "название этапа",
+                        "type": "string"
+                    },
+                    "exec": {
+                        "description": "Выполнена диагностика или нет",
+                        "type": "string",
+                        "enum": [
+                            "Y",
+                            "N"
+                        ]
+                    },
+                    "warranty": {
+                        "description": "Гарантия",
+                        "type": "string",
+                        "enum": [
+                            "Y",
+                            "N"
+                        ]
+                    },
+                    "diagnostic": {
+                        "description": "Описание диагностики",
+                        "type": "string"
+                    },
+                    "result": {
+                        "description": "Результат диагностики",
                         "type": "string"
                     }
                 }
@@ -1470,6 +1817,10 @@
                         "description": "постоянный id из web",
                         "type": "integer"
                     },
+                    "nmbr": {
+                        "description": "Номер заказ-наряда",
+                        "type": "string"
+                    },
                     "date_order": {
                         "description": "дата заказ-наряда",
                         "type": "string",
@@ -1486,6 +1837,10 @@
                     "vin_nmbr": {
                         "description": "VIN автомобиля",
                         "type": "string"
+                    },
+                    "mileage": {
+                        "description": "Пробег автомобиля",
+                        "type": "integer"
                     },
                     "note": {
                         "description": "комментарий к заказ-наряду",
@@ -1520,6 +1875,26 @@
                             "$ref": "#/components/schemas/autoserviceClaims"
                         }
                     },
+                    "control": {
+                        "description": "Срочные работы, Диагностика, Замечания по работам",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/autoserviceControl"
+                        }
+                    },
+                    "notes": {
+                        "description": "Примечания",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "content": {
+                                    "description": "содержание примечания",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
                     "parts": {
                         "description": "запчасти, входящие в заказ-наряд",
                         "type": "array",
@@ -1533,6 +1908,11 @@
                         "items": {
                             "$ref": "#/components/schemas/autoserviceJobs"
                         }
+                    },
+                    "lastupdate": {
+                        "description": "дата последнего изменения любой составляющей части з-н, сделано специально для 1С и будет игнорироваться для метода PUT",
+                        "type": "string",
+                        "format": "datetime"
                     }
                 }
             },
@@ -1541,6 +1921,7 @@
                     "id",
                     "date_event",
                     "event_type",
+                    "owner_type",
                     "contractor_code"
                 ],
                 "properties": {
@@ -1553,6 +1934,14 @@
                     "date_event": {
                         "type": "string",
                         "format": "date"
+                    },
+                    "owner_type": {
+                        "type": "string",
+                        "enum": [
+                            "contractor",
+                            "lead"
+                        ],
+                        "description" : "contractor - событие контрагента\nlead - событие лида"
                     },
                     "contractor_code": {
                         "type": "string"
@@ -1714,7 +2103,6 @@
                     }
                 }
             },
-
             "autoserviceCalc": {
                 "required": [
                     "id",
@@ -1727,6 +2115,10 @@
                     },
                     "local_id": {
                         "type": "integer"
+                    },
+                    "nmbr": {
+                        "description": "Номер калькуляции",
+                        "type": "string"
                     },
                     "date_calc": {
                         "type": "string",
@@ -1763,6 +2155,10 @@
                         "items":{
                             "$ref": "#/components/schemas/autoserviceJobs"
                         }
+                    },
+                    "total": {
+                        "description": "Стоимость калькуляции с НДС",
+                        "type": "number"
                     },
                     "booking": {
                         "description": "время бронирования постов",
@@ -1908,6 +2304,46 @@
                         }
                     }
 
+                }
+            },
+            "partAnalogs": {
+                "type": "object",
+                "required": [
+                    "nmbr",
+                    "brand",
+                    "analogs"
+                ],
+                "properties": {
+                    "nmbr": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "analogs": {
+                        "type": "array",
+                        "items":{
+                            "$ref": "#/components/schemas/partAnalog"
+                        }
+                    }
+                }
+            },
+            "partAnalog": {
+                "type": "object",
+                "required": [
+                    "nmbr",
+                    "brand"
+                ],
+                "properties": {
+                    "nmbr": {
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
                 }
             },
             "partsMotion": {
