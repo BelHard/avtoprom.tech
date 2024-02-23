@@ -1029,6 +1029,24 @@
                 "responses": {
                     "405": {
                         "description": "Invalid input"
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Success"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1052,6 +1070,346 @@
                 "responses": {
                     "405": {
                         "description": "Invalid input"
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Success"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/waybills/expense": {
+            "get": {
+                "tags": [
+                    "Склады"
+                ],
+                "summary": "Получение расходных накладных для внешней системы",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Включать накладные за указанную дату",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "YYYY-MM-DD"
+                        }
+                    },
+                    {
+                        "name": "hours",
+                        "in": "query",
+                        "description": "Включать накладные за указанное количество часов",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Включать накладные за указанное количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "waybills",
+                                        "status"
+                                    ],
+                                    "properties": {
+                                        "waybills": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": [
+                                                    "waybill_id",
+                                                    "date_created",
+                                                    "date_last_update"
+                                                ],
+                                                "properties": {
+                                                    "waybill_id": {
+                                                        "description": "id накладной",
+                                                        "type": "string"
+                                                    },
+                                                    "num": {
+                                                        "description": "номер накладной",
+                                                        "type": "string"
+                                                    },
+                                                    "date_waybill": {
+                                                        "description": "дата накладной",
+                                                        "type": "string",
+                                                        "format": "date"
+                                                    },
+                                                    "to_storage": {
+                                                        "description": "склад назначения",
+                                                        "type": "string"
+                                                    },
+                                                    "contractor_ynp": {
+                                                        "description": "УНП получателя",
+                                                        "type": "string"
+                                                    },
+                                                    "from_storage": {
+                                                        "type": "string"
+                                                    },
+                                                    "date_created": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "date_last_update": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "products": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "article",
+                                                                "name",
+                                                                "count",
+                                                                "date_created",
+                                                                "date_last_update"
+                                                            ],
+                                                            "properties": {
+                                                                "article": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "count": {
+                                                                    "type": "number"
+                                                                },
+                                                                "unit": {
+                                                                    "type": "string"
+                                                                },
+                                                                "currency": {
+                                                                    "type": "string"
+                                                                },
+                                                                "consignment": {
+                                                                    "type": "string"
+                                                                },
+                                                                "price": {
+                                                                    "type": "number"
+                                                                },
+                                                                "priceTotal": {
+                                                                    "type": "number"
+                                                                },
+                                                                "nds": {
+                                                                    "type": "number"
+                                                                },
+                                                                "ndsTotal": {
+                                                                    "type": "number"
+                                                                },
+                                                                "date_created": {
+                                                                    "type": "string",
+                                                                    "format": "datetime"
+                                                                },
+                                                                "date_last_update": {
+                                                                    "type": "string",
+                                                                    "format": "datetime"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/waybills/coming": {
+            "get": {
+                "tags": [
+                    "Склады"
+                ],
+                "summary": "Получение приходной накладной по данным из внешней системы",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Конкретная дата",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "waybills",
+                                        "status"
+                                    ],
+                                    "properties": {
+                                        "waybills": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": [
+                                                    "waybill_id",
+                                                    "date_created",
+                                                    "date_last_update"
+                                                ],
+                                                "properties": {
+                                                    "waybill_id": {
+                                                        "description": "id накладной",
+                                                        "type": "string"
+                                                    },
+                                                    "num": {
+                                                        "description": "номер накладной",
+                                                        "type": "string"
+                                                    },
+                                                    "date_waybill": {
+                                                        "description": "дата накладной",
+                                                        "type": "string",
+                                                        "format": "date"
+                                                    },
+                                                    "to_storage": {
+                                                        "description": "склад назначения",
+                                                        "type": "string"
+                                                    },
+                                                    "contractor_ynp": {
+                                                        "description": "УНП получателя",
+                                                        "type": "string"
+                                                    },
+                                                    "from_storage": {
+                                                        "type": "string"
+                                                    },
+                                                    "date_created": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "date_last_update": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "products": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "article",
+                                                                "name",
+                                                                "count",
+                                                                "date_created",
+                                                                "date_last_update"
+                                                            ],
+                                                            "properties": {
+                                                                "article": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "count": {
+                                                                    "type": "number"
+                                                                },
+                                                                "unit": {
+                                                                    "type": "string"
+                                                                },
+                                                                "currency": {
+                                                                    "type": "string"
+                                                                },
+                                                                "consignment": {
+                                                                    "type": "string"
+                                                                },
+                                                                "price": {
+                                                                    "type": "number"
+                                                                },
+                                                                "priceTotal": {
+                                                                    "type": "number"
+                                                                },
+                                                                "nds": {
+                                                                    "type": "number"
+                                                                },
+                                                                "ndsTotal": {
+                                                                    "type": "number"
+                                                                },
+                                                                "date_created": {
+                                                                    "type": "string",
+                                                                    "format": "datetime"
+                                                                },
+                                                                "date_last_update": {
+                                                                    "type": "string",
+                                                                    "format": "datetime"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1279,6 +1637,164 @@
                 }
             }
         },
+        "/shipment/tasks": {
+            "get": {
+                "tags": [
+                    "Отгрузки"
+                ],
+                "summary": "получение данных по заданиям на сборку из отгрузок",
+                "description": "",
+                "operationId": "getShipmentTasks",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Конкретная дата",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "shipment_id",
+                        "in": "query",
+                        "description": "Идентификатор отгрузки",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "список заданий на сборку",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "tasks"
+                                    ],
+                                    "properties": {
+                                        "tasks": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": [
+                                                    "document_id",
+                                                    "date_waybill",
+                                                    "num",
+                                                    "storage_code"
+                                                ],
+                                                "properties": {
+                                                    "document_id": {
+                                                        "type": "number"
+                                                    },
+                                                    "date_waybill": {
+                                                        "description": "код склада отгрузки",
+                                                        "type": "string",
+                                                        "format": "date"
+                                                    },
+                                                    "num": {
+                                                        "type": "string"
+                                                    },
+                                                    "recipient_type": {
+                                                        "description": "вид получателя",
+                                                        "type": "string"
+                                                    },
+                                                    "storage_code": {
+                                                        "description": "Склад отгрузки",
+                                                        "type": "string"
+                                                    },
+                                                    "shipment_id": {
+                                                        "description": "id отгрузки",
+                                                        "type": "number"
+                                                    },
+                                                    "contractor_unp": {
+                                                        "type": "string"
+                                                    },
+                                                    "storage_target": {
+                                                        "type": "string"
+                                                    },
+                                                    "substrate": {
+                                                        "description": "вид отгрузки",
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "expense",
+                                                            "workorder"
+                                                        ]
+                                                    },
+                                                    "substrate_id": {
+                                                        "description": "id получателя отгрузки (например заказ-наряда, если вид отгрузки workorder)",
+                                                        "type": "number"
+                                                    },
+                                                    "author": {
+                                                        "type": "string"
+                                                    },
+                                                    "shipment_author": {
+                                                        "type": "string"
+                                                    },
+                                                    "date_document": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "product": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "brand",
+                                                                "consignment",
+                                                                "quantity"
+                                                            ],
+                                                            "properties": {
+                                                                "article": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "brand": {
+                                                                    "type": "string"
+                                                                },
+                                                                "quantity": {
+                                                                    "type": "number"
+                                                                },
+                                                                "unit": {
+                                                                    "type": "string"
+                                                                },
+                                                                "consignment": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/relocation": {
             "get": {
                 "tags": [
@@ -1408,6 +1924,7 @@
         "schemas": {
             "Error": {
                 "title": "Ошибка",
+                "type": "object",
                 "required": [
                     "status",
                     "error_message",
@@ -1423,8 +1940,19 @@
                     "error_code": {
                         "type": "string"
                     }
-                },
-                "type": "object"
+                }
+            },
+            "Success": {
+                "title": "Успешно",
+                "type": "object",
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    }
+                }
             },
             "autoserviceSpecs": {
                 "type": "object",
@@ -2728,9 +3256,48 @@
                 ],
                 "properties": {
                     "relocation": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/relocationUpdate"
+                        "type": "object",
+                        "required": [
+                            "local_id",
+                            "document_id",
+                            "storage_code_from",
+                            "storage_code_to"
+                        ],
+                        "properties": {
+                            "local_id": {
+                                "type": "integer"
+                            },
+                            "document_id": {
+                                "type": "string"
+                            },
+                            "date_waybill": {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            "storage_code_from": {
+                                "type": "string"
+                            },
+                            "storage_code_to": {
+                                "type": "string"
+                            },
+                            "num": {
+                                "type": "string"
+                            },
+                            "author": {
+                                "type": "string"
+                            },
+                            "date_document": {
+                                "type": "string"
+                            },
+                            "contractor_unp": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/relocationProducts"
+                                }
+                            }
                         }
                     }
                 }
@@ -2744,23 +3311,8 @@
                     "relocation": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/relocationId"
+                            "$ref": "#/components/schemas/localId"
                         }
-                    }
-                }
-            },
-            "relocationId": {
-                "type": "object",
-                "required": [
-                    "local_id",
-                    "document_id"
-                ],
-                "properties": {
-                    "local_id": {
-                        "type": "integer"
-                    },
-                    "document_id": {
-                        "type": "string"
                     }
                 }
             },
@@ -2772,51 +3324,6 @@
                     "storage_code_to"
                 ],
                 "properties": {
-                    "document_id": {
-                        "type": "string"
-                    },
-                    "date_waybill": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "storage_code_from": {
-                        "type": "string"
-                    },
-                    "storage_code_to": {
-                        "type": "string"
-                    },
-                    "num": {
-                        "type": "string"
-                    },
-                    "author": {
-                        "type": "string"
-                    },
-                    "date_document": {
-                        "type": "string"
-                    },
-                    "contractor_unp": {
-                        "type": "string"
-                    },
-                    "products": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/relocationProducts"
-                        }
-                    }
-                }
-            },
-            "relocationUpdate": {
-                "type": "object",
-                "required": [
-                    "local_id",
-                    "document_id",
-                    "storage_code_from",
-                    "storage_code_to"
-                ],
-                "properties": {
-                    "local_id": {
-                        "type": "integer"
-                    },
                     "document_id": {
                         "type": "string"
                     },
