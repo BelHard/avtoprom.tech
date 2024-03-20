@@ -1031,6 +1031,7 @@
                         "description": "Invalid input"
                     },
                     "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1040,6 +1041,7 @@
                         }
                     },
                     "400": {
+                        "description": "Error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1072,6 +1074,7 @@
                         "description": "Invalid input"
                     },
                     "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1081,6 +1084,7 @@
                         }
                     },
                     "400": {
+                        "description": "Error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1136,6 +1140,7 @@
                         "description": "Invalid input"
                     },
                     "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1287,6 +1292,7 @@
                         "description": "Invalid input"
                     },
                     "200": {
+                        "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1403,6 +1409,49 @@
                         }
                     },
                     "400": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Склады"
+                ],
+                "summary": "Создание/обновление приходной накладной по данным из внешней системы",
+                "description": "Для обновление, нужно передать local_id. Если local_id = 0 будет создана новая накладная",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WaybillComing"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/localId"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1451,7 +1500,18 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/storageReserves"
+                                    "type": "object",
+                                    "required": [
+                                        "reserves"
+                                    ],
+                                    "properties": {
+                                        "reserves": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/storageReserve"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1462,8 +1522,45 @@
                 }
             }
         },
+        "/parts/reserve/{id}": {
+            "get": {
+                "tags": [
+                    "Склады"
+                ],
+                "summary": "Получение резерва по id",
+                "operationId": "getReserveById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "local_id резерва",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Информация о резерве",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/storageReserve"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Резерв не найден"
+                    }
+                }
+            }
+        },
         "/parts/motion": {
             "post": {
+                "deprecated": true,
                 "tags": [
                     "Склады"
                 ],
@@ -1635,6 +1732,101 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Отгрузки"
+                ],
+                "summary": "сохранение данных по отгрузкам (только в производство)",
+                "description": "1C присылает отгрузки в производство",
+                "operationId": "postShipment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "shipments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "required": [
+                                                "document_id",
+                                                "storage",
+                                                "recipient_type"
+                                            ],
+                                            "properties": {
+                                                "document_id": {
+                                                    "description": "уникальный id от 1С"
+                                                },
+                                                "storage": {
+                                                    "description": "код склада отгрузки",
+                                                    "type": "string"
+                                                },
+                                                "recipient_type": {
+                                                    "description": "вид получателя",
+                                                    "type": "string"
+                                                },
+                                                "recipient_id": {
+                                                    "description": "local_id заказ-наряда (потому что отгрузка только 'workorder')",
+                                                    "type": "string"
+                                                },
+                                                "recipient": {
+                                                    "description": "название получателя",
+                                                    "type": "string"
+                                                },
+                                                "substrate": {
+                                                    "description": "вид отгрузки (только workorder)",
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "workorder"
+                                                    ]
+                                                },
+                                                "date_created": {
+                                                    "type": "string",
+                                                    "format": "datetime"
+                                                },
+                                                "parts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "brand",
+                                                            "num",
+                                                            "quantity"
+                                                        ],
+                                                        "properties": {
+                                                            "brand": {
+                                                                "type": "string"
+                                                            },
+                                                            "num": {
+                                                                "type": "string"
+                                                            },
+                                                            "quantity": {
+                                                                "type": "number"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "400": {
+                        "description": "Не удалось найти объекты, связанные с данными запроса"
+                    },
+                    "200": {
+                        "description": "данные приняты"
+                    }
+                }
             }
         },
         "/shipment/tasks": {
@@ -1791,6 +1983,179 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/storages/orders": {
+            "get": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "получение заказов поставщиков",
+                "description": "",
+                "operationId": "getStoragesOrders",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Количество дней",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Конкретная дата",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "список заказов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "orders"
+                                    ],
+                                    "properties": {
+                                        "orders": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": [
+                                                    "order_id"
+                                                ],
+                                                "properties": {
+                                                    "order_id": {
+                                                        "type": "number"
+                                                    },
+                                                    "supplier_title:": {
+                                                        "description": "название поставщика",
+                                                        "type": "string"
+                                                    },
+                                                    "storage_title": {
+                                                        "description": "название склада",
+                                                        "type": "string"
+                                                    },
+                                                    "storage_code": {
+                                                        "description": "код склада",
+                                                        "type": "string"
+                                                    },
+                                                    "delivery_storage_title": {
+                                                        "description": "название склада доставки",
+                                                        "type": "string"
+                                                    },
+                                                    "delivery_storage_code": {
+                                                        "description": "код склада доставки"
+                                                    },
+                                                    "type": {
+                                                        "description": "тип поставщик/склад",
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "supplier",
+                                                            "storage"
+                                                        ]
+                                                    },
+                                                    "status": {
+                                                        "description": "статус заказа",
+                                                        "type": "string"
+                                                    },
+                                                    "price_total": {
+                                                        "type": "number"
+                                                    },
+                                                    "via_central_storage": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "Y",
+                                                            "N"
+                                                        ]
+                                                    },
+                                                    "note": {
+                                                        "description": "примечание",
+                                                        "type": "string"
+                                                    },
+                                                    "author": {
+                                                        "description": "автор заказа",
+                                                        "type": "string"
+                                                    },
+                                                    "date_accepted": {
+                                                        "description": "дата подтверждения",
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "date_created": {
+                                                        "description": "дата создания",
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "date_last_update": {
+                                                        "type": "string",
+                                                        "format": "datetime"
+                                                    },
+                                                    "parts": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "$ref": "#/components/schemas/storageOrderParts"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Заказы"
+                ],
+                "summary": "создание потребностей из 1С",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "parts": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/storageOrderParts"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Success"
+                                }
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid input"
                     }
                 }
             }
@@ -2149,6 +2514,21 @@
                         "description": "код спецификации",
                         "type": "string"
                     },
+                    "price_no_nds": {
+                        "description": "цена за ед. без НДС",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "bonus_price": {
+                        "description": "бонусов списано",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "total_price": {
+                        "description": "итого с НДС",
+                        "type": "number",
+                        "format": "float"
+                    },
                     "bonus_point": {
                         "description": "Бонусных балов к начислению",
                         "type": "number",
@@ -2189,6 +2569,21 @@
                     "master": {
                         "description": "мастер цеха, ответственный за работу",
                         "type": "string"
+                    },
+                    "price_no_nds": {
+                        "description": "Цена за ед. без НДС",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "bonus_price": {
+                        "description": "Бонусных балов списано",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "total_price": {
+                        "description": "Итогос НДС",
+                        "type": "number",
+                        "format": "float"
                     },
                     "bonus_point": {
                         "description": "Бонусных балов к начислению",
@@ -3014,6 +3409,9 @@
                         "type": "string",
                         "minLength":1
                     },
+                    "local_id": {
+                        "type": "number"
+                    },
                     "num": {
                         "type": "string",
                         "minLength":1
@@ -3036,21 +3434,74 @@
                     "products": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/createWaybillsComingInternalProducts"
+                            "$ref": "#/components/schemas/waybillsComingInternalProducts"
                         }
                     }
                 }
             },
-            "createWaybillsComingInternalProducts": {
+            "WaybillComing": {
+                "type": "object",
+                "required": [
+                    "document_id",
+                    "num",
+                    "date_waybill",
+                    "contractor_code"
+                ],
+                "properties": {
+                    "document_id": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "local_id": {
+                        "description": "Если local_id = 0 будет создана новая накладная, иначе обновлена",
+                        "type": "number"
+                    },
+                    "num": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "date_waybill": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "date_document": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "contractor_code": {
+                        "type": "string"
+                    },
+                    "from_storage_code": {
+                        "description": "код склада, откуда прибыла накладная (если известно)",
+                        "type": "string"
+                    },
+                    "to_storage_code": {
+                        "description": "код склада, куда прибыла накладная",
+                        "type": "string"
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/waybillsComingInternalProducts"
+                        }
+                    }
+                }
+            },
+            "waybillsComingInternalProducts": {
                 "type": "object",
                 "required": [
                     "article",
-                    "name"
+                    "name",
+                    "consignment",
+                    "brand"
                 ],
                 "properties": {
+                    "product_id": {
+                        "type": "number"
+                    },
                     "article": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "consignment": {
                         "type": "string",
@@ -3058,7 +3509,7 @@
                     },
                     "name": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "brand": {
                         "type": "string",
@@ -3069,46 +3520,56 @@
                     },
                     "unit": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "currency": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "price": {
+                        "description": "цена закупки за ед. без НДС",
                         "type": "number",
-                        "minLength":1
+                        "minLength": 1
+                    },
+                    "price_purchase": {
+                        "description": "добавлено для совместимости, тоже самое что price",
+                        "type": "number",
+                        "minLength": 1
                     },
                     "priceTotal": {
+                        "description": "цена за все количество без НДС",
                         "type": "number",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "priceImport": {
+                        "description": "цена импортера",
                         "type": "number",
                         "minLength": 1
                     },
                     "nds": {
+                        "description": "процент НДС",
                         "type": "number",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "ndsPrice": {
+                        "description": "сумма НДС",
                         "type": "number",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "ndsTotal": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "price_purchase": {
+                        "description": "цена закупки за ед. с НДС",
                         "type": "number",
                         "minLength": 1
                     },
                     "countPackages": {
-                        "type": "number"
+                        "description": "количество упаковок",
+                        "type": "number",
+                        "minLength": 1
                     },
                     "weight": {
+                        "description": "вес упаковки",
                         "type": "number",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "date_unblocked": {
                         "type": "string"
@@ -3124,15 +3585,15 @@
                 "properties": {
                     "waybill_id": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "document_id": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "num": {
                         "type": "string",
-                        "minLength":1
+                        "minLength": 1
                     },
                     "date_waybill": {
                         "type": "string",
@@ -3152,86 +3613,8 @@
                     "products": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/updateWaybillsComingInternalProducts"
+                            "$ref": "#/components/schemas/waybillsComingInternalProducts"
                         }
-                    }
-                }
-            },
-            "updateWaybillsComingInternalProducts": {
-                "type": "object",
-                "required": [
-                    "article",
-                    "name"
-                ],
-                "properties": {
-                    "product_id": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "article": {
-                        "type": "string",
-                        "minLength":1
-                    },
-                    "consignment": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "minLength":1
-                    },
-                    "brand": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "count": {
-                        "type": "number"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "minLength":1
-                    },
-                    "currency": {
-                        "type": "string",
-                        "minLength":1
-                    },
-                    "price": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "priceTotal": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "priceImport": {
-                        "type": "number",
-                        "minLength": 1
-                    },
-                    "nds": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "ndsPrice": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "ndsTotal": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "price_purchase": {
-                        "type": "number",
-                        "minLength": 1
-                    },
-                    "countPackages": {
-                        "type": "number"
-                    },
-                    "weight": {
-                        "type": "number",
-                        "minLength":1
-                    },
-                    "date_unblocked": {
-                        "type": "string"
                     }
                 }
             },
@@ -3360,6 +3743,7 @@
             "relocationProducts": {
                 "type": "object",
                 "required": [
+                    "reserve_id",
                     "article",
                     "brand",
                     "quantity",
@@ -3367,6 +3751,10 @@
                     "unit"
                 ],
                 "properties": {
+                    "reserve_id": {
+                        "description": "id резерва",
+                        "type": "integer"
+                    },
                     "article": {
                         "type": "string"
                     },
@@ -3399,20 +3787,6 @@
                     },
                     "document_id": {
                         "type": "string"
-                    }
-                }
-            },
-            "storageReserves": {
-                "type": "object",
-                "required": [
-                    "reserves"
-                ],
-                "properties": {
-                    "reserves": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/storageReserve"
-                        }
                     }
                 }
             },
@@ -3470,6 +3844,39 @@
                     "date_create": {
                         "type": "string",
                         "format": "datetime"
+                    }
+                }
+            },
+            "storageOrderParts": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                        "part_id": {
+                            "type": "number"
+                        },
+                        "document_id": {
+                            "type": "string"
+                        },
+                        "storage_code": {
+                            "type": "string"
+                        },
+                        "num": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "brand": {
+                            "type": "string"
+                        },
+                        "quantity": {
+                            "type": "number"
+                        },
+                        "consignment": {
+                            "type": "string"
+                        }
                     }
                 }
             }
